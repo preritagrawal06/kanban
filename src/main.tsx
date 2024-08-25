@@ -4,21 +4,28 @@ import './index.css'
 import Auth from './Pages/Auth'
 import Kanban from './Pages/Kanban.tsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { ProtectedRoutes } from './lib/utils/protectedRoute.tsx'
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Kanban/>
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: "/",
+        element: <Kanban />
+      }
+    ]
   },
   {
     path: "/auth",
-    element: <Auth/>
+    element: <Auth />
   }
 ])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* <App /> */}
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </StrictMode>,
 )

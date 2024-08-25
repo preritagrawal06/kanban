@@ -9,8 +9,8 @@ export const useUserStore = create((set)=>({
                 username: username,
                 password: password
             })
-            console.log(data);
-            set({user: data})
+            // console.log(data);
+            set({user: data.access})
             localStorage.setItem('token', data)
 
         } catch (error) {
