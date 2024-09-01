@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Column from "@/Components/Column";
 import { DEFAULT_CARDS } from "@/lib/data";
 import BurnBarrel from "@/Components/BurnBarrel";
 import Navbar from "@/Components/Navbar";
+import { useProjectStore } from "@/lib/stores/projectStore";
 
 const Kanban = () => {
     const [cards, setCards] = useState(DEFAULT_CARDS)
+    const fetchProjects = useProjectStore((state: any)=>state.fetchProjects)
+    const projects = useProjectStore((state: any)=>state.projects)
+
+    useEffect(()=>{
+        fetchProjects()
+    }, [])
     
     return ( 
         <div className="h-screen w-full bg-neutral-900 text-neutral-50 flex flex-row">
-            <Navbar/>
+            <Navbar projects={projects}/>
             <div className="flex flex-col h-full overflow-auto flex-grow">
                 <div className="flex overflow-auto gap-3 p-12 flex-grow">
                     <Column title="Backlogs" headingColor="text-neutral-400" cards={cards} setCards={setCards} column="backlog"/>
