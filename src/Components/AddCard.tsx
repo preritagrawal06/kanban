@@ -1,33 +1,26 @@
+import { useProjectStore } from "@/lib/stores/projectStore";
+import { useTodoStore } from "@/lib/stores/todoStore";
 import { motion } from "framer-motion";
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
-
-type CardProp = {
-    title: string,
-    id: string,
-    column: string
-}
+import { FormEvent, useState } from "react";
 
 type addCardProp = {
     column: string,
-    setCards: Dispatch<SetStateAction<CardProp[]>>
 }
 
-const AddCard = ({column, setCards}: addCardProp) => {
+const AddCard = ({column}: addCardProp) => {
     const [adding, setAdding] = useState(false)
     const [text, setText] = useState("")
+    const addTodo = useTodoStore((state: any)=>state.addTodo)
+    const activeProject = useProjectStore((state: any)=>state.project)
     
     const handleSubmit = (e: FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
 
         if(!text.trim().length) return;
 
-        const newCard: CardProp = {
-            title: text,
-            column,
-            id: Math.random().toString()
-        }
+        addTodo(activeProject.id, column, text)
 
-        setCards((prev)=>[...prev, newCard])
+        // setCards((prev)=>[...prev, newCard])
         setAdding(false)
     }
     

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState, DragEvent } from "react";
+import { useState, DragEvent } from "react";
 import Card from "./Card";
 import AddCard from "./AddCard";
 import DropIndicator from "./DropIndicator";
@@ -6,9 +6,10 @@ import { getIndicators } from "../lib/utils/getIndicators";
 import { getNearestIndicator } from "../lib/utils/getNearestIndicator";
 import { clearHighlight } from "../lib/utils/clearHighlight";
 import { highlightIndicator } from "../lib/utils/highlightIndicator";
+import { useTodoStore } from "@/lib/stores/todoStore";
 
 type CardProp = {
-    title: string,
+    description: string,
     id: string,
     column: string
 }
@@ -17,58 +18,63 @@ type ColumnProp = {
     title: string,
     headingColor: string,
     column: string,
-    cards: CardProp[],
-    setCards: Dispatch<SetStateAction<CardProp[]>>
 }
 
-const Column = ({title, headingColor, column, cards, setCards}: ColumnProp) => {
+const Column = ({ title, headingColor, column }: ColumnProp) => {
     const [active, setActive] = useState(false)
-    const filteredCards = cards.filter(c => c.column === column);
+    const cards = useTodoStore((state: any) => state.todos)
+    const transferTodo = useTodoStore((state: any) => state.transferTodo)
+    const updateTodo = useTodoStore((state: any) => state.updateTodo)
+    const filteredCards = cards.filter((c: CardProp) => c.column === column)
+
 
     const handleDragStart = (e: DragEvent<HTMLDivElement>, card: CardProp) => {
         e.dataTransfer.setData("cardId", card.id)
     }
 
-    const handleDragOver = (e: DragEvent<HTMLDivElement>)=>{
+    const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        highlightIndicator(e, column) 
+        highlightIndicator(e, column)
         setActive(true)
     }
 
-    const handleDragLeave = ()=>{
+    const handleDragLeave = () => {
         clearHighlight(null, column)
         setActive(false)
     }
-    
-    const handleDragEnd = (e: DragEvent<HTMLDivElement>) =>{
+
+    const handleDragEnd = (e: DragEvent<HTMLDivElement>) => {
         clearHighlight(null, column)
         setActive(false)
         const cardId = e.dataTransfer.getData("cardId")
         const indicators = getIndicators(column)
-        const {element} = getNearestIndicator(e, indicators)
+        const { element } = getNearestIndicator(e, indicators)
         const before = element.dataset.before || "-1"
-        // console.log(before);
-        
-        if(before !== cardId){
-            let copy = [...cards];
-            let cardToTransfer = copy.find((c: CardProp) => c.id === cardId)
-            if(!cardToTransfer) return;
-            cardToTransfer = {...cardToTransfer, column}
 
-            copy = copy.filter((c: CardProp)=> c.id !== cardId)
+        if (before !== cardId) {
+            let copy = [...cards];
+            let cardToTransfer = copy.find((c: CardProp) => c.id == cardId) // comparision of int and string
+            
+            if (!cardToTransfer) return;
+
+            if(cardToTransfer.column !== column){
+                updateTodo(column, cardToTransfer.id)
+                cardToTransfer = { ...cardToTransfer, column }
+            }
+
+            copy = copy.filter((c: CardProp) => c.id != cardId)
 
             const moveToBack = before || "-1"
 
-            if(moveToBack === "-1"){
+            if (moveToBack === "-1") {
                 copy.push(cardToTransfer)
-            } else{
-                const insertAtIndex = copy.findIndex((el: CardProp)=> el.id === before)
-                // console.log(insertAtIndex);
-                
-                if(insertAtIndex === undefined) return;
+            } else {
+                const insertAtIndex = copy.findIndex((el: CardProp) => el.id === before)
+
+                if (insertAtIndex === undefined) return;
                 copy.splice(insertAtIndex, 0, cardToTransfer)
             }
-            setCards(copy)
+            transferTodo(copy)
         }
     }
 
@@ -84,17 +90,17 @@ const Column = ({title, headingColor, column, cards, setCards}: ColumnProp) => {
             </div>
             <div className={`h-full w-full ${active ? 'bg-neutral-800/50' : 'bg-neutral-800/0'}`}>
                 {
-                    filteredCards.map(c => {
-                        return(
-                            <Card key={c.id} {...c} handleDragStart={handleDragStart}/>
+                    filteredCards.map((c: CardProp) => {
+                        return (
+                            <Card key={c.id} {...c} handleDragStart={handleDragStart} />
                         )
                     })
                 }
-                <DropIndicator beforeId="-1" column={column}/>
-                <AddCard column={column} setCards={setCards}/>
+                <DropIndicator beforeId="-1" column={column} />
+                <AddCard column={column} />
             </div>
         </div>
     );
 }
- 
+
 export default Column;

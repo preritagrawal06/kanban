@@ -1,18 +1,10 @@
-import { Dispatch, DragEvent, SetStateAction, useState } from "react";
+import { useTodoStore } from "@/lib/stores/todoStore";
+import { DragEvent, useState } from "react";
 
-type CardProp = {
-    title: string,
-    id: string,
-    column: string
-}
 
-type BurnBarrelProp = {
-    setCards: Dispatch<SetStateAction<CardProp[]>>
-}
-
-const BurnBarrel = ({setCards}: BurnBarrelProp) => {
+const BurnBarrel = () => {
     const [active, setActive] = useState(false)
-
+    const deleteTodo = useTodoStore((state: any)=>state.deleteTodo)
     const handleDragOver = (e: any)=>{
         e.preventDefault();
         setActive(true)
@@ -28,9 +20,7 @@ const BurnBarrel = ({setCards}: BurnBarrelProp) => {
         
         const cardId = e.dataTransfer.getData("cardId")
         // console.log(cardId);
-        setCards((prev: CardProp[]): any => 
-            prev.filter((c) => c.id !== cardId)
-        )
+        deleteTodo(cardId)
         setActive(false)
     }
 

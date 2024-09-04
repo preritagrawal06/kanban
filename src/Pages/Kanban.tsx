@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import Column from "@/Components/Column";
-import { DEFAULT_CARDS } from "@/lib/data";
 import BurnBarrel from "@/Components/BurnBarrel";
 import Navbar from "@/Components/Navbar";
 import { useProjectStore } from "@/lib/stores/projectStore";
 import { useColumnStore } from "@/lib/stores/columnStore";
+import { useTodoStore } from "@/lib/stores/todoStore";
 
 const Kanban = () => {
-    const [cards, setCards] = useState(DEFAULT_CARDS)
     const [title, setTitle] = useState("")
     const fetchProjects = useProjectStore((state: any)=>state.fetchProjects)
     const projects = useProjectStore((state: any)=>state.projects)
@@ -15,15 +14,18 @@ const Kanban = () => {
     const columns = useColumnStore((state: any)=> state.columns)
     const getColumns = useColumnStore((state: any)=> state.getColumns)
     const addColumn = useColumnStore((state: any)=> state.addColumn)
+    const getTodos = useTodoStore((state: any)=>state.getTodos)
 
     useEffect(()=>{
         fetchProjects().then((data: any)=>{
             getColumns(data.id)
+            getTodos(data.id)
         })
     }, [])
 
     useEffect(()=>{
         if(activeProject) getColumns(activeProject.id)
+        if(activeProject) getTodos(activeProject.id)
     }, [activeProject])
     
     const handleSubmit = async()=>{
@@ -42,11 +44,11 @@ const Kanban = () => {
                             {
                                 columns.map((column: any)=>{
                                     return (
-                                        <Column key={column.id} title={column.title} headingColor="text-neutral-400" cards={cards} setCards={setCards} column={column.slug}/>
+                                        <Column key={column.id} title={column.title} headingColor="text-neutral-400" column={column.slug}/>
                                     )
                                 })
                             }
-                            <BurnBarrel setCards={setCards}/>
+                            <BurnBarrel/>
                         </> 
                     }
                 </div>
