@@ -32,5 +32,18 @@ export const useProjectStore = create((set)=>({
     },
     setActiveProject: (project: any)=>{
         set({project: project})
+    },
+    deleteProject: async(projectId: string)=>{
+        try {
+            const res = await api.delete(`project/${projectId}`)
+
+            if(res.status === 204){
+                set((state: any)=>({projects: state.projects.filter((proj: any)=> proj.id !== projectId)}))
+                set((state: any)=>({project: state.projects.length ? state.projects[0] : null}))
+            }
+
+        } catch (error) {
+            console.log((error as Error).message);
+        }
     }
 }))

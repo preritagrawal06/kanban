@@ -1,6 +1,7 @@
 import { useUserStore } from "@/lib/stores/userStore";
 import AddProject from "./AddProject";
 import { useProjectStore } from "@/lib/stores/projectStore";
+import { DialogCloseButton } from "./DeleteDialog";
 
 type ProjectProp = {
     name: string,
@@ -23,8 +24,14 @@ const Navbar = ({ projects }: { projects: ProjectProp[] }) => {
                     projects.length > 0 &&
                     projects.map((project) => {
                         return (
-                            <div key={project.id} onClick={()=>{setActiveProject(project)}} className={`w-full rounded ${activeProject.id === project.id ? "border border-neutral-600 bg-neutral-800/50" : ""} transition-colors hover:bg-neutral-800 hover:cursor-pointer p-2`}>
+                            <div key={project.id} onClick={()=>{setActiveProject(project)}} className={`group w-full flex items-center justify-between rounded ${activeProject.id === project.id ? "border border-neutral-600 bg-neutral-800/50" : ""} transition-colors hover:bg-neutral-800 hover:cursor-pointer p-2`}>
                                 {project.name}
+                                <div className={`hidden ${activeProject.id === project.id ? "group-hover:flex": ""}`}>
+                                    {/* <Button className="hover:bg-red-500/50 h-fit w-fit p-2" variant="ghost" size="icon">
+                                        <img src="/cross-svgrepo-com.svg" alt="" width={8} height={8}/>
+                                    </Button> */}
+                                    <DialogCloseButton activeProject={activeProject}/>
+                                </div>
                             </div>
                         )
                     })
