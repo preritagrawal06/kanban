@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent } from "react";
 import Column from "@/Components/Column";
 import BurnBarrel from "@/Components/BurnBarrel";
 import Navbar from "@/Components/Navbar";
@@ -28,9 +28,16 @@ const Kanban = () => {
         if(activeProject) getTodos(activeProject.id)
     }, [activeProject])
     
-    const handleSubmit = async()=>{
+    const handleSubmit = ()=>{
         if(!title.trim().length) return;
-        await addColumn(activeProject.id, title)
+        addColumn(activeProject.id, title)
+        setTitle("")
+    }
+
+    const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>)=>{
+        if(e.key === 'Enter'){
+            handleSubmit()
+        }
     }
 
     return ( 
@@ -53,7 +60,7 @@ const Kanban = () => {
                     }
                 </div>
                 <div className="w-full px-12 py-4 flex gap-3 justify-center">
-                    <input type="text" className="bg-neutral-800 rounded border border-neutral-500 w-[30%] p-2" placeholder="Enter column title" value={title} onChange={(e)=>{setTitle(e.target.value)}}/>
+                    <input type="text" className="bg-neutral-800 rounded border border-neutral-500 w-[30%] p-2" placeholder="Enter column title" value={title} onChange={(e)=>{setTitle(e.target.value)}} onKeyUp={handleKeyUp}/>
                     <button onClick={handleSubmit} className="flex items-center gap-1.5 rounded bg-neutral-50 px-3 py-1.5 text-xs text-neutral-950 transition-colors hover:bg-neutral-300">Submit</button>
                 </div>
             </div>

@@ -15,7 +15,7 @@ const Navbar = ({ projects }: { projects: ProjectProp[] }) => {
     const user = useUserStore((state: any) => state.user)
     const activeProject = useProjectStore((state: any) => state.project)
     const setActiveProject = useProjectStore((state: any) => state.setActiveProject)
-    
+
     return (
         <div className="w-56 py-8 px-4 border-r shrink-0 flex flex-col gap-8">
             <p className="text-xl font-semibold">Hi, {user.username}!</p>
@@ -24,13 +24,10 @@ const Navbar = ({ projects }: { projects: ProjectProp[] }) => {
                     projects.length > 0 &&
                     projects.map((project) => {
                         return (
-                            <div key={project.id} onClick={()=>{setActiveProject(project)}} className={`group w-full flex items-center justify-between rounded ${activeProject.id === project.id ? "border border-neutral-600 bg-neutral-800/50" : ""} transition-colors hover:bg-neutral-800 hover:cursor-pointer p-2`}>
+                            <div key={project.id} onClick={() => { setActiveProject(project) }} className={`group w-full flex items-center justify-between rounded ${activeProject.id === project.id ? "border border-neutral-600 bg-neutral-800/50" : ""} transition-colors hover:bg-neutral-800 hover:cursor-pointer p-2`}>
                                 {project.name}
-                                <div className={`hidden ${activeProject.id === project.id ? "group-hover:flex": ""}`}>
-                                    {/* <Button className="hover:bg-red-500/50 h-fit w-fit p-2" variant="ghost" size="icon">
-                                        <img src="/cross-svgrepo-com.svg" alt="" width={8} height={8}/>
-                                    </Button> */}
-                                    <DialogCloseButton activeProject={activeProject}/>
+                                <div className={`hidden ${activeProject.id === project.id ? "group-hover:flex" : ""}`}>
+                                    <DialogCloseButton activeProject={activeProject} />
                                 </div>
                             </div>
                         )

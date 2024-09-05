@@ -11,7 +11,7 @@ import {
 } from "@/Components/ui/dialog"
 import { Input } from "@/Components/ui/input"
 import { useProjectStore } from "@/lib/stores/projectStore"
-import { useState } from "react"
+import { useState, KeyboardEvent } from "react"
 
 type ProjectProp = {
     name: string,
@@ -31,6 +31,12 @@ export function DialogCloseButton({ activeProject }: { activeProject: ProjectPro
         deleteProject(activeProject.id)
     }
 
+    const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>)=>{
+        if(e.key === 'Enter'){
+            handleSubmit()
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -47,7 +53,7 @@ export function DialogCloseButton({ activeProject }: { activeProject: ProjectPro
                 </DialogHeader>
                 <div className="flex items-center space-x-2">
                     <div className="grid flex-1 gap-2">
-                        <Input className="text-neutral-100" value={text} onChange={(e) => { setText(e.target.value) }} />
+                        <Input className="text-neutral-100" value={text} onChange={(e) => { setText(e.target.value) }} onKeyUp={handleKeyUp}/>
                     </div>
                 </div>
                 <DialogFooter className="sm:justify-start">

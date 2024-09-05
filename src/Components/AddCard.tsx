@@ -19,8 +19,6 @@ const AddCard = ({column}: addCardProp) => {
         if(!text.trim().length) return;
 
         addTodo(activeProject.id, column, text)
-
-        // setCards((prev)=>[...prev, newCard])
         setAdding(false)
     }
     
