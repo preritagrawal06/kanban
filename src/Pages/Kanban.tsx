@@ -56,7 +56,7 @@ const Kanban = () => {
             <div className="flex flex-col h-full overflow-auto flex-grow">
                 <div className="flex overflow-auto gap-3 p-12 flex-grow">
                     {
-                        columns.length > 0 &&
+                        columns.length > 0 ?
                         <>
                             {
                                 columns.map((column: ColumnProp) => {
@@ -69,6 +69,10 @@ const Kanban = () => {
                             }
                             <BurnBarrel />
                         </>
+                        :
+                        <div className="w-full h-full flex items-center justify-center">
+                            <p className="no-column text-3xl font-bold">No Columns :(</p>
+                        </div>
                     }
                 </div>
                 <div className="w-full px-12 py-4 flex gap-3 justify-center">
