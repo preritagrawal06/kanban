@@ -22,13 +22,16 @@ type ProjectProp = {
 
 export function DialogCloseButton({ activeProject }: { activeProject: ProjectProp }) {
     const [text, setText] = useState("")
+    const [loading, setLoading] = useState(false)
     const reqResponse = activeProject.name.trim().toLowerCase().split(" ").join("")
     const deleteProject = useProjectStore((state: any) => state.deleteProject)
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         if (!text.trim().length) return
         if (text !== reqResponse) return
-        deleteProject(activeProject.id)
+        setLoading(true)
+        await deleteProject(activeProject.id)
+        setLoading(false)
     }
 
     const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>)=>{
@@ -63,8 +66,8 @@ export function DialogCloseButton({ activeProject }: { activeProject: ProjectPro
                         </Button>
                     </DialogClose>
                     <DialogClose asChild>
-                        <Button type="button" variant="destructive" onClick={handleSubmit}>
-                            Confirm
+                        <Button type="button" variant="destructive" disabled={loading} onClick={handleSubmit}>
+                            {loading ? "Deleting..." : "Confirm"}
                         </Button>
                     </DialogClose>
                 </DialogFooter>

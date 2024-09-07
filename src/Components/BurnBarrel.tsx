@@ -1,9 +1,11 @@
 import { useTodoStore } from "@/lib/stores/todoStore";
 import { DragEvent, useState } from "react";
-
+import { HiFire } from "react-icons/hi";
+import { IoTrashOutline } from "react-icons/io5";
 
 const BurnBarrel = () => {
     const [active, setActive] = useState(false)
+    const [loading, setLoading] = useState(false)
     const deleteTodo = useTodoStore((state: any)=>state.deleteTodo)
     const handleDragOver = (e: any)=>{
         e.preventDefault();
@@ -16,11 +18,12 @@ const BurnBarrel = () => {
         setActive(false)
     }
 
-    const handleDragEnd = (e: DragEvent<HTMLDivElement>)=>{
-        
+    const handleDragEnd = async(e: DragEvent<HTMLDivElement>)=>{
+        setLoading(true)
         const cardId = e.dataTransfer.getData("cardId")
         // console.log(cardId);
-        deleteTodo(cardId)
+        await deleteTodo(cardId)
+        setLoading(false)
         setActive(false)
     }
 
@@ -31,7 +34,7 @@ const BurnBarrel = () => {
             : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
         }`
         }>
-            DELETE
+            {loading ? <HiFire/> : <IoTrashOutline />}
         </div>
     );
 }

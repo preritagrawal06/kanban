@@ -63,7 +63,6 @@ export const useTodoStore = create((set)=>({
             }
         } catch (error) {
             console.log((error as Error).message);
-            
         }
     },
 }))
