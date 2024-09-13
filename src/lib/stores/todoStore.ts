@@ -43,7 +43,7 @@ export const useTodoStore = create((set)=>({
     },
     updateTodo: async(column: string, cardId: string)=>{
         try {
-            const {data} = await api.patch(`todo/${cardId}`, {
+            await api.patch(`todo/${cardId}`, {
                 column: column
             })
             // console.log(data);
