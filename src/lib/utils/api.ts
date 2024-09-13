@@ -4,7 +4,7 @@ const api = axios.create({baseURL:import.meta.env.VITE_BASE_URL})
 
 api.interceptors.request.use(
     (config) => {
-        // console.log(import.meta.env.VITE_BASE_URL);
+        console.log(import.meta.env.VITE_BASE_URL);
         
         const authToken = localStorage.getItem('token')
         config.headers.Accept = 'application/json'
