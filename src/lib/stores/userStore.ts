@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import api from "../utils/api";
 import {jwtDecode} from 'jwt-decode'
+import { getTokenValue } from "../utils/getTokenValue";
+
+const token = getTokenValue()
 
 export const useUserStore = create((set)=>({
-    user: JSON.parse(localStorage.getItem('user')!) || null,
+    user: token,
     userLogin: async (username: string, password: string)=>{
         try {
             const {data} = await api.post("token/", {
@@ -25,9 +28,9 @@ export const useUserStore = create((set)=>({
     userSignup: async(username: string, email: string, password: string)=>{
         try {
             const {data} = await api.post("user/register/", {
-                username,
-                email,
-                password
+                username: username,
+                email: email,
+                password: password
             })
             console.log(data);
             

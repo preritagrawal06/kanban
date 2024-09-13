@@ -31,7 +31,7 @@ export const useTodoStore = create((set)=>({
                 column: column,
                 description: description
             })
-            console.log(data);
+            // console.log(data);
             set((state: any)=>({todos: [...state.todos, data]}))
         } catch (error) {
             console.log((error as Error).message);
@@ -46,7 +46,7 @@ export const useTodoStore = create((set)=>({
             const {data} = await api.patch(`todo/${cardId}`, {
                 column: column
             })
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.log((error as Error).message);
             

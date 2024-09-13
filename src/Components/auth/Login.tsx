@@ -7,11 +7,15 @@ import { useNavigate } from "react-router";
 const Login = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const userLogin = useUserStore((state: any)=> state.userLogin)
     const navigate = useNavigate()
     const handleLogin = async()=>{
+        if(!username.trim().length || !password.trim().length) return
+        setLoading(true)
         await userLogin(username, password)
+        setLoading(false)
         if(localStorage.getItem('token')){
             navigate("/")
         }
@@ -22,7 +26,7 @@ const Login = () => {
             <p className="text-xl text-neutral-200 font-bold">LOGIN</p>
             <Input placeholder="username" type="text" value={username} onChange={(e)=>{setUsername(e.target.value)}}/>
             <Input placeholder="password" type="password" value={password} onChange={(e)=>{setPassword(e.target.value)}}/>
-            <Button variant="secondary" onClick={handleLogin}>Login</Button>
+            <Button variant="secondary" disabled={loading} onClick={handleLogin}>{loading ? "Logging..." : "Login"}</Button>
         </div>
     );
 }
