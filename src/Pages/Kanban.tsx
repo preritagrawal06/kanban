@@ -16,6 +16,7 @@ type ColumnProp = {
 const Kanban = () => {
     const [title, setTitle] = useState("")
     const [loading, setLoading] = useState(false)
+    const [projectLoading, setProjectLoading] = useState(false)
     const fetchProjects = useProjectStore((state: any) => state.fetchProjects)
     const projects = useProjectStore((state: any) => state.projects)
     const activeProject = useProjectStore((state: any) => state.project)
@@ -25,9 +26,14 @@ const Kanban = () => {
     const getTodos = useTodoStore((state: any) => state.getTodos)
 
     useEffect(() => {
+        setProjectLoading(true)
         fetchProjects().then((data: any) => {
             getColumns(data.id)
             getTodos(data.id)
+            setProjectLoading(false)
+        }).catch((error: Error) => {
+            console.log(error.message);
+            setProjectLoading(false)
         })
     }, [])
 
@@ -54,27 +60,34 @@ const Kanban = () => {
         <div className="h-screen w-full bg-neutral-900 text-neutral-50 flex flex-row">
             <Navbar projects={projects} />
             <div className="flex flex-col h-full overflow-auto flex-grow">
-                <div className="flex overflow-auto gap-3 p-12 flex-grow">
-                    {
-                        columns.length > 0 ?
-                        <>
-                            {
-                                columns.map((column: ColumnProp) => {
-                                    //@ts-ignore
-                                    const headingColor = DEFAULT_COLORS[column.slug.split('-')[0]] || "text-neutral-400"
-                                    return (
-                                        <Column key={column.id} title={column.title} headingColor={headingColor} column={column.slug} />
-                                    )
-                                })
-                            }
-                            <BurnBarrel />
-                        </>
-                        :
-                        <div className="w-full h-full flex items-center justify-center">
-                            <p className="no-column text-3xl font-bold">No Columns :(</p>
+                {
+                    projectLoading ?
+                        <div className="flex overflow-auto gap-3 justify-center items-center flex-grow">
+                            <img src="/fade-stagger-circles.svg" alt="loading" width={48} />
                         </div>
-                    }
-                </div>
+                        :
+                        <div className="flex overflow-auto gap-3 p-12 flex-grow">
+                            {
+                                columns.length > 0 ?
+                                    <>
+                                        {
+                                            columns.map((column: ColumnProp) => {
+                                                //@ts-ignore
+                                                const headingColor = DEFAULT_COLORS[column.slug.split('-')[0]] || "text-neutral-400"
+                                                return (
+                                                    <Column key={column.id} title={column.title} headingColor={headingColor} column={column.slug} />
+                                                )
+                                            })
+                                        }
+                                        <BurnBarrel />
+                                    </>
+                                    :
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <p className="no-column text-3xl font-bold">No Columns :(</p>
+                                    </div>
+                            }
+                        </div>
+                }
                 <div className="w-full px-12 py-4 flex gap-3 justify-center">
                     <input type="text" className="bg-neutral-800 rounded border border-neutral-500 w-[30%] p-2" placeholder="Enter column title" value={title} onChange={(e) => { setTitle(e.target.value) }} onKeyUp={handleKeyUp} />
                     <button onClick={handleSubmit} disabled={loading} className="flex items-center gap-1.5 rounded bg-neutral-50 px-3 py-1.5 text-xs text-neutral-950 transition-colors hover:bg-neutral-300">{loading ? "Adding.." : "Add"}</button>
