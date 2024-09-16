@@ -2,16 +2,24 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useUserStore } from "@/lib/stores/userStore";
+import { useToast } from "@/hooks/use-toast"
 
 const Signup = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
     const [loading, setLoading] = useState(false)
+    const {toast} = useToast()
 
     const userSignup = useUserStore((state: any)=>state.userSignup)
     const handleSignup = async()=>{
-        if(!username.trim().length || !password.trim().length || !email.trim().length) return
+        if(!username.trim().length || !password.trim().length || !email.trim().length){
+            toast({
+                description: "Please fill all the details before submitting",
+                variant: "destructive"
+            })
+            return
+        }
         setLoading(true)
         await userSignup(username, email, password)
         setLoading(false)

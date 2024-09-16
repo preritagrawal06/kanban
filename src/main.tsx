@@ -5,6 +5,8 @@ import Auth from './Pages/Auth'
 import Kanban from './Pages/Kanban.tsx'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { ProtectedRoutes } from './lib/utils/protectedRoute.tsx'
+import { Toaster } from "@/Components/ui/toaster"
+
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* <App /> */}
+    <Toaster/>
     <RouterProvider router={router} />
   </StrictMode>,
 )
