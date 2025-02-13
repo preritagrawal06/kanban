@@ -1,5 +1,6 @@
 import {create} from "zustand"
 import api from "../utils/api"
+import { AxiosError } from "axios"
 
 export const useProjectStore = create((set)=>({
     projects: [],
@@ -43,6 +44,23 @@ export const useProjectStore = create((set)=>({
             }
 
         } catch (error) {
+            console.log((error as Error).message);
+        }
+    },
+    shareProject: async(projectId: string, email: string)=>{
+        try{
+            const res = await api.post(`projects/${projectId}/share/`,{
+                email: email
+            })
+            return res?.data?.detail
+        } catch(error){
+            const status = (error as AxiosError).status
+            if(status === 400){
+                throw new Error("This email does not exist")
+            }
+            if(status === 403){
+                throw new Error("You do not have permission to share the board")
+            }
             console.log((error as Error).message);
         }
     }

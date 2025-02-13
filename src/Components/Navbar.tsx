@@ -2,6 +2,7 @@ import { useUserStore } from "@/lib/stores/userStore";
 import AddProject from "./AddProject";
 import { useProjectStore } from "@/lib/stores/projectStore";
 import { DialogCloseButton } from "./DeleteDialog";
+import { ShareProjectButton } from "./ShareDialog";
 
 type ProjectProp = {
     name: string,
@@ -26,9 +27,13 @@ const Navbar = ({ projects }: { projects: ProjectProp[] }) => {
                         return (
                             <div key={project.id} onClick={() => { setActiveProject(project) }} className={`group w-full flex items-center justify-between rounded ${activeProject.id === project.id ? "border border-neutral-600 bg-neutral-800/50" : ""} transition-colors hover:bg-neutral-800 hover:cursor-pointer p-2`}>
                                 {project.name}
-                                <div className={`hidden ${activeProject.id === project.id ? "group-hover:flex" : ""}`}>
-                                    <DialogCloseButton activeProject={activeProject} />
-                                </div>
+                                {
+                                    project.created_by === user.user_id &&
+                                    <div className={`hidden ${activeProject.id === project.id ? "group-hover:flex" : ""}`}>
+                                        <ShareProjectButton activeProject={activeProject} />
+                                        <DialogCloseButton activeProject={activeProject} />
+                                    </div>
+                                }
                             </div>
                         )
                     })
